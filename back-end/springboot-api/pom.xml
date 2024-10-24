@@ -8,11 +8,11 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.communityapp</groupId>
-	<artifactId>community-app</artifactId>
+	<groupId>com.community-backend</groupId>
+	<artifactId>springboot-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>community-app-backend</name>
-	<description>Demo project for Spring Boot</description>
+	<name>springboot-api</name>
+	<description>Spring Boot APIs for COMMUNITY app</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -27,9 +27,7 @@
 		<url/>
 	</scm>
 	<properties>
-		<maven.compiler.source>17</maven.compiler.source>
-		<maven.compiler.target>17</maven.compiler.target>
-		<java.version>17</java.version>
+		<java.version>23</java.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -48,19 +46,14 @@
 			<optional>true</optional>
 		</dependency>
 		<dependency>
-			<groupId>com.mysql</groupId>
-			<artifactId>mysql-connector-j</artifactId>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.postgresql</groupId>
-			<artifactId>postgresql</artifactId>
-			<version>42.6.0</version>
 		</dependency>
 	</dependencies>
 
