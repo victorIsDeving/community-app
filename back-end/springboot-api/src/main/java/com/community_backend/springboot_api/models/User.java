@@ -11,7 +11,7 @@ public class User implements Serializable {
 
     // id + generated value = bd vai criar os ids automaticamente
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     private String nome;
     private String email;
