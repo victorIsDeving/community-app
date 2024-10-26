@@ -29,4 +29,14 @@ public class UserController {
         return userRepository.save(newUser);
     }
 
+    @DeleteMapping("/user")
+    public void deleteUser(@RequestBody User user) {
+        userRepository.delete(user);
+    }
+
+    @PutMapping("/user")
+    public User atualizaUser(@RequestBody User user) {
+        return userRepository.save(user);
+    }
+
 }
