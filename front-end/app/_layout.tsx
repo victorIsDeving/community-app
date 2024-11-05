@@ -1,37 +1,51 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import React from 'react';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Image, Text, View, StyleSheet } from 'react-native';
+import Home from './Home';
+import UserProfile from './UserProfile';
+import UserEventsStack from './UserEventsStack';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+const Drawer = createDrawerNavigator();
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
-
+function CustomHeader() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-    </ThemeProvider>
+    <View style={styles.headerContainer}>
+      <Image source={require('../assets/images/Logo.png')} style={styles.logo} />
+      <Text style={styles.title}>Community</Text>
+    </View>
   );
 }
+
+export default function Layout() {
+  return (
+    <Drawer.Navigator 
+      initialRouteName="Home"
+      screenOptions={{
+        headerTitle: () => <CustomHeader />,
+        headerTitleAlign: 'center',
+      }}
+    >
+      <Drawer.Screen name="Home" component={Home} options={{ title: 'Tela Inicial' }} />
+      <Drawer.Screen name="UserProfile" component={UserProfile} options={{ title: 'Meu Perfil' }} />
+      <Drawer.Screen name="UserEventsStack" component={UserEventsStack} options={{ title: 'Meus Eventos' }} />
+    </Drawer.Navigator>
+  );
+}
+
+
+const styles = StyleSheet.create({
+  headerContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  logo: {
+    width: 50,
+    height: 50,
+    marginRight: 8,
+  },
+  title: {
+    fontSize: 35,
+    fontWeight: 'bold',
+  },
+});
