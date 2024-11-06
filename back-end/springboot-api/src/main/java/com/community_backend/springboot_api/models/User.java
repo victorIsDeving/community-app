@@ -41,6 +41,9 @@ public class User implements Serializable {
     @ManyToMany(mappedBy = "users_admnistrators")
     private List<Event> events_admnistrators;
 
+    @ManyToMany(mappedBy = "interest_user")
+    private List<Interest> interests_user;
+
     // Getters e Setters
     public Long getId() {
         return id;
