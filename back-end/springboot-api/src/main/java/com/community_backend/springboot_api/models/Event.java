@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 @Entity
 @Table(name = "TB_EVENTS")
@@ -38,6 +39,22 @@ public class Event implements Serializable {
 
     @Column(name = "visibilidade")
     private String visibilidade;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tb_event_participants",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users_participants;
+
+    @ManyToMany
+    @JoinTable(
+            name = "tb_event_admnistrators",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users_admnistrators;
 
     // Getters e Setters
     public Long getId() {
