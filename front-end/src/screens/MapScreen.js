@@ -38,8 +38,8 @@ const MapScreen = () => {
             initialRegion={{
               latitude: location.latitude,
               longitude: location.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+              latitudeDelta: 0.0100,
+              longitudeDelta: 0.0100,
             }}
           >
             <Marker coordinate={location} title="Você está aqui!" />
