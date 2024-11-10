@@ -92,4 +92,13 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+  backButton: {
+    backgroundColor: '#007BFF',
+    borderRadius: 5,
+    padding: 10,
+    alignItems: 'center',
+    width: '80%',
+    position: 'absolute',
+    bottom: 10,
+  }
 });
