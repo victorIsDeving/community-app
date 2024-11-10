@@ -1,42 +1,41 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 export default function UserProfile() {
   const navigation = useNavigation();
 
-  // Dados fictícios do usuário para visualização
   const user = {
     name: 'Alex Zhu',
     email: 'alex@exemplo.com',
     phone: '(11) 98765-4321',
     profilePicture: 'https://via.placeholder.com/100',
     description:
-      'Sou um estudante de graduação apaixonado por tecnologia e desenvolvimento de software. Estou sempre em busca de novos desafios e oportunidades para aprender e crescer na minha carreira.',
+      'Sou um estudante de graduação apaixonado por tecnologia e desenvolvimento de software.',
     interests: ['Basquete', 'Futebol', 'Tecnologia', 'Música', 'Caminhadas'],
+  };
+
+  const handleEditProfilePicture = () => {
+    // Lógica para editar a foto do perfil
+    console.log('Editar foto do perfil');
   };
 
   return (
     <View style={styles.container}>
-      {/* Cabeçalho */}
       <Text style={styles.header}>Perfil do Usuário</Text>
 
-      {/* Imagem de perfil */}
-      <Image source={{ uri: user.profilePicture }} style={styles.profileImage} />
+      <View style={styles.profileImageContainer}>
+        <Image source={{ uri: user.profilePicture }} style={styles.profileImage} />
+        <TouchableOpacity style={styles.editIconContainer} onPress={handleEditProfilePicture}>
+          <Icon name="camera-alt" size={24} color="#fff" />
+        </TouchableOpacity>
+      </View>
 
-      {/* Nome do usuário */}
       <Text style={styles.title}>{user.name}</Text>
-
-      {/* E-mail */}
       <Text style={styles.label}>E-mail: {user.email}</Text>
-
-      {/* Telefone */}
       <Text style={styles.label}>Telefone: {user.phone}</Text>
-
-      {/* Descrição sobre o usuário */}
       <Text style={styles.description}>{user.description}</Text>
-
-      {/* Interesses do usuário como tags */}
       <Text style={styles.interestsTitle}>Interesses:</Text>
       <View style={styles.interestsContainer}>
         {user.interests.map((interest, index) => (
@@ -46,8 +45,18 @@ export default function UserProfile() {
         ))}
       </View>
 
-      {/* Botão para voltar */}
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Community')}>
+      {/* Botão para editar o perfil */}
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('EditProfile', { user })}
+      >
+        <Text style={styles.buttonText}>Editar Perfil</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate('Community')}
+      >
         <Text style={styles.buttonText}>Voltar para a Tela Inicial</Text>
       </TouchableOpacity>
     </View>
@@ -68,6 +77,9 @@ const styles = StyleSheet.create({
     color: '#007BFF',
     marginBottom: 20,
   },
+  profileImageContainer: {
+    position: 'relative',
+  },
   profileImage: {
     width: 100,
     height: 100,
@@ -75,6 +87,14 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     borderWidth: 3,
     borderColor: '#007BFF',
+  },
+  editIconContainer: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    backgroundColor: '#007BFF',
+    borderRadius: 15,
+    padding: 4,
   },
   title: {
     fontSize: 28,

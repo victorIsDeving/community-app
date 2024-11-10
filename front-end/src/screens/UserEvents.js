@@ -5,9 +5,9 @@ import { useNavigation } from '@react-navigation/native';
 export default function UserEvents() {
   const navigation = useNavigation();
   const [events, setEvents] = useState([
-    { id: '1', title: 'Basquete da tropa', date: '2024-11-10', description: 'Partida de basquete com o pessoal.' },
-    { id: '2', title: 'Futebol da turma', date: '2024-12-15', description: 'Futebas dos amigos, quem quiser cola.' },
-    { id: '3', title: 'Corrida na EACH', date: '2025-01-20', description: 'Corrida em volta da EACH-USP.' },
+    { id: '1', title: 'Basquete da tropa', date: '2024-11-10', time: '14:00', location: 'Quadra da Escola', description: 'Partida de basquete com o pessoal.' },
+    { id: '2', title: 'Futebol da turma', date: '2024-12-15', time: '16:00', location: 'Campo Municipal', description: 'Futebas dos amigos, quem quiser cola.' },
+    { id: '3', title: 'Corrida na EACH', date: '2025-01-20', time: '07:30', location: 'EACH-USP', description: 'Corrida em volta da EACH-USP.' },
   ]);
 
   const handleEventPress = (event) => {
@@ -25,7 +25,7 @@ export default function UserEvents() {
           renderItem={({ item }) => (
             <TouchableOpacity style={styles.eventCard} onPress={() => handleEventPress(item)}>
               <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDate}>{`Data: ${item.date}`}</Text>
+              <Text style={styles.eventDate}>{`Data: ${item.date} às ${item.time}`}</Text>
             </TouchableOpacity>
           )}
         />

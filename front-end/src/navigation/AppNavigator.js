@@ -1,9 +1,9 @@
 import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import MapScreen from '../screens/MapScreen'; 
-import UserProfile from '../screens/UserProfile';
 import EventsStackNavigator from '../navigation/EventsStackNavigator'
 import CustomHeader from '../screens/CustomHeader';
+import ProfileStackNavigator from './ProfileStackNavigator';
 
 
 const Drawer = createDrawerNavigator();
@@ -18,7 +18,7 @@ function AppNavigator() {
       }}
     >
       <Drawer.Screen name="Community" component={MapScreen} />
-      <Drawer.Screen name="Profile" component={UserProfile} />
+      <Drawer.Screen name="Profile" component={ProfileStackNavigator} />
       <Drawer.Screen name="Events" component={EventsStackNavigator} />
     </Drawer.Navigator>
   );
