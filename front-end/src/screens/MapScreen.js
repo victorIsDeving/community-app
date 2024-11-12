@@ -1,18 +1,19 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
 const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [hasPermission, setHasPermission] = useState(false);
+  const [markers, setMarkers] = useState([]); 
 
-  // Função para obter a permissão de localização
+  
   const requestLocationPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
       setHasPermission(true);
-      getLocation(); // Obter a localização do usuário
+      getLocation(); 
     } else {
       setHasPermission(false);
     }
@@ -26,8 +27,33 @@ const MapScreen = () => {
   };
 
   useEffect(() => {
-    requestLocationPermission(); // Solicitar permissão de localização quando o componente for montado
+    requestLocationPermission(); 
   }, []);
+
+  const handleMapPress = (event) => {
+    const { coordinate } = event.nativeEvent;
+
+    Alert.alert(
+      'Criar Evento',
+      'Deseja criar um evento neste local?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Sim',
+          onPress: () => {
+            
+            setMarkers((prevMarkers) => [
+              ...prevMarkers,
+              { coordinate, key: Math.random().toString() },
+            ]);
+          },
+        },
+      ]
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -41,8 +67,19 @@ const MapScreen = () => {
               latitudeDelta: 0.0100,
               longitudeDelta: 0.0100,
             }}
+            onPress={handleMapPress} 
           >
+            {/* Marcador do usuário */}
             <Marker coordinate={location} title="Você está aqui!" />
+
+            {/* Marcadores criados */}
+            {markers.map((marker) => (
+              <Marker
+                key={marker.key}
+                coordinate={marker.coordinate}
+                title="Evento"
+              />
+            ))}
           </MapView>
         ) : (
           <Text>Carregando localização...</Text>
