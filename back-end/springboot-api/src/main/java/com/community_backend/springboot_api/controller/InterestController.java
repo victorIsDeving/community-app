@@ -1,51 +1,63 @@
 package com.community_backend.springboot_api.controller;
 
 import com.community_backend.springboot_api.models.Interest;
-import com.community_backend.springboot_api.repository.InterestRepository;
+import com.community_backend.springboot_api.services.InterestService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
-@RequestMapping(value="/api")
-@Tag(name = "Interests", description = "API REST for managing interests")
-@CrossOrigin(origins="*") // liberar todos os domínios para acesso dessa API
+@RequestMapping("/api/interests")
+@Tag(name = "Interests", description = "API REST for managing Interests")
+@CrossOrigin(origins = "*")
 public class InterestController {
 
     @Autowired
-    InterestRepository interestRepository;
+    private InterestService interestService;
 
-    @GetMapping("/interests")
-    @Operation(summary="Retorna lista de interesses")
-    public List<Interest> listaInterests() {
-        return interestRepository.findAll();
-    }
-/*
-    @GetMapping("/interests/{id}")
-    @Operation(summary="Retorna interesse unico")
-    public Interest listaInterestUnico(@PathVariable(value="id") long id) {
-        return interestRepository.findById(id);
-    }
-*/
-    @PostMapping("/interest")
-    @Operation(summary="Salve um interesse")
-    public Interest inserirInterest(@RequestBody Interest newInterest) {
-        return interestRepository.save(newInterest);
+    // Criar ou atualizar interesse
+    @PostMapping
+    @Operation(summary = "Cria ou atualiza um interesse")
+    public Interest createOrUpdateInterest(@RequestBody Interest interest) {
+        return interestService.saveInterest(interest);
     }
 
-    @DeleteMapping("/interest")
-    @Operation(summary="Deleta um interesse")
-    public void deleteInterest(@RequestBody Interest interest) {
-        interestRepository.delete(interest);
+    // Listar todos os interesses
+    @GetMapping
+    @Operation(summary = "Retorna todos os interesses")
+    public List<Interest> getAllInterests() {
+        return interestService.getAllInterests();
     }
 
-    @PutMapping("/interest")
-    @Operation(summary="Atualiza um interesse")
-    public Interest atualizaInterest(@RequestBody Interest interest) {
-        return interestRepository.save(interest);
+    // Obter um interesse específico pelo nome
+    @GetMapping("/{interesse}")
+    @Operation(summary = "Retorna um interesse específico")
+    public Optional<Interest> getInterestByName(@PathVariable String interesse) {
+        return interestService.getInterestByName(interesse);
     }
 
+    // Deletar um interesse
+    @DeleteMapping("/{interesse}")
+    @Operation(summary = "Deleta um interesse")
+    public void deleteInterest(@PathVariable String interesse) {
+        interestService.deleteInterest(interesse);
+    }
+
+    // Adicionar interesse a um evento
+    @PostMapping("/event/{eventId}/interests/{interesse}")
+    @Operation(summary = "Adiciona um interesse a um evento")
+    public void addInterestToEvent(@PathVariable Long eventId, @PathVariable String interesse) {
+        interestService.addInterestToEvent(interesse, eventId);
+    }
+
+    // Adicionar interesse a um usuário
+    @PostMapping("/user/{userId}/interests/{interesse}")
+    @Operation(summary = "Adiciona um interesse a um usuário")
+    public void addInterestToUser(@PathVariable Long userId, @PathVariable String interesse) {
+        interestService.addInterestToUser(interesse, userId);
+    }
 }

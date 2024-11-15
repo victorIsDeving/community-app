@@ -9,8 +9,8 @@ import java.util.List;
 public class Interest implements Serializable {
 
     @Id
-    @Column(name = "interesse")
-    private String interesse;
+    @Column(name = "interesse", nullable = false)
+    private String interesse; // Usando o campo 'interesse' como chave primária
 
     @ManyToMany
     @JoinTable(
@@ -28,14 +28,28 @@ public class Interest implements Serializable {
     )
     private List<User> interest_user;
 
-
     // Getters e Setters
-
-    public void setInteresse(String interesse) {
-        this.interesse = interesse;
-    }
     public String getInteresse() {
         return interesse;
     }
 
+    public void setInteresse(String interesse) {
+        this.interesse = interesse;
+    }
+
+    public List<Event> getInterestEvent() {
+        return interest_event;
+    }
+
+    public void setInterestEvent(List<Event> interest_event) {
+        this.interest_event = interest_event;
+    }
+
+    public List<User> getInterestUser() {
+        return interest_user;
+    }
+
+    public void setInterestUser(List<User> interest_user) {
+        this.interest_user = interest_user;
+    }
 }

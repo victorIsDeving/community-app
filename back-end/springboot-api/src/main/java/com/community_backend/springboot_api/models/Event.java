@@ -50,11 +50,11 @@ public class Event implements Serializable {
 
     @ManyToMany
     @JoinTable(
-            name = "tb_event_admnistrators",
+            name = "tb_event_administrators",
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id")
     )
-    private List<User> users_admnistrators;
+    private List<User> users_administrators;
 
     @ManyToMany(mappedBy = "interest_event")
     private List<Interest> interests_event;
@@ -130,5 +130,29 @@ public class Event implements Serializable {
 
     public void setVisibilidade(String visibilidade) {
         this.visibilidade = visibilidade;
+    }
+
+    public List<User> getUsersParticipants() {
+        return users_participants;
+    }
+
+    public void setUsersParticipants(List<User> users_participants) {
+        this.users_participants = users_participants;
+    }
+
+    public List<User> getUsersAdministrators() {
+        return users_administrators;
+    }
+
+    public void setUsersAdministrators(List<User> users_administrators) {
+        this.users_administrators = users_administrators;
+    }
+
+    public List<Interest> getInterestsEvent() {
+        return interests_event;
+    }
+
+    public void setInterestsEvent(List<Interest> interests_event) {
+        this.interests_event = interests_event;
     }
 }
