@@ -1,7 +1,42 @@
 import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+const apiTesteGET = async ()=>{
+  try{
+  console.log('1');
+  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/users', );
+  console.log('2');
+  if(v.ok){
+    const json = await v.json();
+    
+    console.log(json);
+  }
+  }catch(e){
+    console.log(e);}
+}
+const apiTestePOST = async ()=>{
+  try{
+  console.log('1');
+  const data = 
+  {
+    "nome": "321",
+    "email": "123",
+    "nusp": 13673051,
+  };
+  const header = {"Content-Type": "application/json"}
+  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/user', {method:"POST", body:JSON.stringify(data), headers: header});
+  console.log('2');
+  console.log(v.status);
+  console.log(v.statusText);
+  console.log(JSON.stringify(v.json()));
+  if(v.ok){
+    const json = await v.json();
+    
+    console.log(json);
+  }
+  }catch(e){
+    console.log(e);}
+}
 export default function UserEvents() {
   const navigation = useNavigation();
   const [events, setEvents] = useState([
@@ -9,6 +44,8 @@ export default function UserEvents() {
     { id: '2', title: 'Futebol da turma', date: '2024-12-15', time: '16:00', location: 'Campo Municipal', description: 'Futebas dos amigos, quem quiser cola.' },
     { id: '3', title: 'Corrida na EACH', date: '2025-01-20', time: '07:30', location: 'EACH-USP', description: 'Corrida em volta da EACH-USP.' },
   ]);
+  
+
 
   const handleEventPress = (event) => {
     navigation.navigate('Event Details', { event });
@@ -17,6 +54,10 @@ export default function UserEvents() {
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Meus Eventos</Text>
+      <Button title="GET" 
+      onPress={apiTesteGET} ></Button>
+      <Button title="POST" 
+      onPress={apiTestePOST}></Button>
 
       {events.length > 0 ? (
         <FlatList
