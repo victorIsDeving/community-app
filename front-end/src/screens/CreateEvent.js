@@ -31,15 +31,6 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
     navigation.navigate('MapScreen');
   }
 
-  // Atualizar a localização com as coordenadas recebidas
-  const handleLocationPress = () => {
-    if (!latitude || !longitude) {
-      Alert.alert("Erro", "Por favor, selecione uma localização no mapa.");
-      return;
-    }
-    setEventLocation(`Latitude: ${latitude}, Longitude: ${longitude}`);
-  };
-
   const handleCreateEvent = () => {
     if (!latitude || !longitude) {
       Alert.alert("Erro", "Por favor, selecione uma localização no mapa.");
@@ -76,7 +67,7 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
     setEventDate(new Date());
     setStartTime(new Date());
     setEndTime(new Date());
-    setEventLocation('');  // Resetando a localização
+    setEventLocation('');  
     setSelectedCategory('');
     setSelectedGroup('');
   };
@@ -95,7 +86,7 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Criar Novo Evento</Text>
+      <Text style={styles.contentContainer}>Criar Novo Evento</Text>
 
       <PaperInput
         label="Nome do Evento"
@@ -116,7 +107,7 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
         mode="outlined"
         onPress={() => setShowDatePicker(true)}
         style={styles.input}
-      >
+        labelStyle={styles.ButtonText}>
         {eventDate.toLocaleDateString()}
       </Button>
 
@@ -124,13 +115,15 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
         <Button
           mode="outlined"
           onPress={() => setShowStartTimePicker(true)}
-          style={styles.timeInput}>
+          style={styles.timeInput}
+          labelStyle={styles.ButtonText}>
           {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </Button>
         <Button
           mode="outlined"
           onPress={() => setShowEndTimePicker(true)}
-          style={styles.timeInput}>
+          style={styles.timeInput}
+          labelStyle={styles.ButtonText}>
           {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </Button>
       </View>
@@ -139,7 +132,8 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
         mode="outlined"
         onPress={goToMap}
         style={styles.input}
-      >
+        labelStyle={styles.ButtonText}>
+      
        {eventLocation ? `${latitudeState}, ${longitudeState}` : "Selecionar Localização no Mapa"}
       </Button>
 
@@ -149,9 +143,9 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
           onDismiss={() => setCategoryVisible(false)}
           anchor={
             <Button
-              mode="outlined"
               onPress={() => setCategoryVisible(true)}
-              style={styles.dropdown}>
+              style={styles.dropdown}
+              labelStyle={styles.ButtonText}>
               {selectedCategory || "Categoria"}
             </Button>
           }>
@@ -166,9 +160,9 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
           onDismiss={() => setGroupVisible(false)}
           anchor={
             <Button
-              mode="outlined"
               onPress={() => setGroupVisible(true)}
-              style={styles.dropdown}>
+              style={styles.dropdown}
+              labelStyle={styles.ButtonText}>
               {selectedGroup || "Grupo"}
             </Button>
           }>
@@ -225,41 +219,91 @@ const styles = StyleSheet.create({
     backgroundColor: "#f7f9fc",
     paddingHorizontal: 16,
     paddingVertical: 20,
+    marginBottom: 20,
+  },
+  contentContainer: {
+    alignItems: "center",
+    marginBottom: 20,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 10,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginBottom: 20,
+    color: "#000",
   },
   input: {
-    marginBottom: 12,
+    backgroundColor: "#f7f9fc",
+    height: 50,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: "#000",
+    borderWidth: 1,
+    borderColor: "#90CAF9",
+    marginBottom: 15, 
   },
   descriptionInput: {
-    height: 150,  // Aumentando a altura para o campo de descrição
-    marginBottom: 12,
-  },
-  createButton: {
-    marginTop: 20,
-  },
-  row: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  timeInput: {
-    width: '45%',
+    backgroundColor: "#f7f9fc",
+    height: 120, 
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    fontSize: 16,
+    color: "#000",
+    borderWidth: 1,
+    borderColor: "#90CAF9",
+    marginBottom: 15, 
   },
   dropdown: {
-    width: '45%',
+    backgroundColor: "#f7f9fc",
+    height: 50,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    fontSize: 16,
+    color: "#000",
+    borderWidth: 1,
+    borderColor: "#90CAF9",
+    justifyContent: "center",
+    marginBottom: 15, 
   },
+  createButton: {
+    backgroundColor: "#007BFF",
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginBottom: 15,
+  },
+  createButtonText: {
+    fontSize: 16,
+    fontWeight: "600",
+    textAlign: "center",
+    color: "#fff",
+  },
+
+  ButtonText: {
+    fontSize: 14,
+    fontWeight: "400",
+    textAlign: "center",
+    color: "#000",
+  },
+
   locationCoordinates: {
-    position: 'absolute',
-    top: 160,  // Ajuste a posição conforme necessário
-    left: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.7)',
-    padding: 8,
+    marginTop: 10, 
+    marginBottom: 15, 
+    paddingHorizontal: 10,
+    paddingVertical: 8,
     borderRadius: 5,
+    borderWidth: 1,
+    borderColor: "#90CAF9",
+    backgroundColor: "#f7f9fc",
+    fontSize: 14,
+    color: "#000",
   },
 });
+
+
+
+
 
 export default CreateEvent;
