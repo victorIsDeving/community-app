@@ -2,6 +2,7 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import UserEvents from '../screens/UserEvents';
 import EventDetails from '../screens/EventDetails';
+import CreateEvent from '../screens/CreateEvent'
 
 const Stack = createStackNavigator();
 
@@ -11,6 +12,7 @@ function EventsStackNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="User Events" component={UserEvents} options={{ headerShown: false }} />
       <Stack.Screen name="Event Details" component={EventDetails} options={{ headerShown: false }} />
+      <Stack.Screen name="CreateEvent" component={CreateEvent} options={{ headerShown: false }} /> 
     </Stack.Navigator>
   );
 }

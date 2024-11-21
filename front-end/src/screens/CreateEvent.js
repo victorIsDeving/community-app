@@ -1,107 +1,149 @@
-// CreateEvent.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, ScrollView } from 'react-native';
-import { Button, IconButton, Menu, Divider, TextInput as PaperInput } from 'react-native-paper';
+import { View, Text, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Button, Menu, TextInput as PaperInput } from 'react-native-paper';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
-const CreateEvent = () => {
+const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
+  // Acessando latitude e longitude do route.params
+  const { latitude, longitude } = route.params || {};
   const [eventName, setEventName] = useState('');
   const [eventDescription, setEventDescription] = useState('');
-  const [eventDate, setEventDate] = useState('');
-  const [startTime, setStartTime] = useState('');
-  const [endTime, setEndTime] = useState('');
-  const [eventLocation, setEventLocation] = useState('');
+  const [eventDate, setEventDate] = useState(new Date());
+  const [startTime, setStartTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date());
+  const [eventLocation, setEventLocation] = [
+    latitude,
+    longitude,
+  ];
+  const [latitudeState, setLatitude] = useState(latitude);
+  const [longitudeState, setLongitude] = useState(longitude);
+
   const [categoryVisible, setCategoryVisible] = useState(false);
   const [groupVisible, setGroupVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState('');
   const [selectedGroup, setSelectedGroup] = useState('');
+  const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
+
+
+  const goToMap = () => {
+    navigation.navigate('MapScreen');
+  }
+
+  // Atualizar a localização com as coordenadas recebidas
+  const handleLocationPress = () => {
+    if (!latitude || !longitude) {
+      Alert.alert("Erro", "Por favor, selecione uma localização no mapa.");
+      return;
+    }
+    setEventLocation(`Latitude: ${latitude}, Longitude: ${longitude}`);
+  };
 
   const handleCreateEvent = () => {
+    if (!latitude || !longitude) {
+      Alert.alert("Erro", "Por favor, selecione uma localização no mapa.");
+      return;
+    }
+
     console.log("Evento criado:", {
       name: eventName,
       description: eventDescription,
       date: eventDate,
       startTime,
       endTime,
-      location: eventLocation,
+      location: { latitude, longitude },  // Passando as coordenadas para o evento
       category: selectedCategory,
       group: selectedGroup,
     });
-    // Limpar campos
+
+    // Enviar evento com localização para o backend
+    onCreateEvent({
+      name: eventName,
+      description: eventDescription,
+      date: eventDate,
+      startTime,
+      endTime,
+      latitude,
+      longitude,  // Enviando as coordenadas
+      category: selectedCategory,
+      group: selectedGroup,
+    });
+
+    // Limpar campos após criação
     setEventName('');
     setEventDescription('');
-    setEventDate('');
-    setStartTime('');
-    setEndTime('');
-    setEventLocation('');
+    setEventDate(new Date());
+    setStartTime(new Date());
+    setEndTime(new Date());
+    setEventLocation('');  // Resetando a localização
     setSelectedCategory('');
     setSelectedGroup('');
+  };
+
+  const handleStartTimeChange = (event, selectedDate) => {
+    const currentDate = selectedDate || startTime;
+    setShowStartTimePicker(false);
+    setStartTime(currentDate);
+  };
+
+  const handleEndTimeChange = (event, selectedDate) => {
+    const currentDate = selectedDate || endTime;
+    setShowEndTimePicker(false);
+    setEndTime(currentDate);
   };
 
   return (
     <ScrollView style={styles.container}>
       <Text style={styles.title}>Criar Novo Evento</Text>
 
-      {/* Nome do Evento */}
       <PaperInput
         label="Nome do Evento"
         value={eventName}
         onChangeText={setEventName}
         style={styles.input}
-        mode="outlined"
       />
 
-      {/* Descrição */}
       <PaperInput
         label="Descrição do Evento"
         value={eventDescription}
         onChangeText={setEventDescription}
-        style={styles.input}
-        mode="outlined"
+        style={styles.descriptionInput}
         multiline
       />
 
-      {/* Data */}
-      <PaperInput
-        label="Data"
-        value={eventDate}
-        onChangeText={setEventDate}
-        style={styles.input}
+      <Button
         mode="outlined"
-        right={<PaperInput.Icon name="calendar" />}
-      />
+        onPress={() => setShowDatePicker(true)}
+        style={styles.input}
+      >
+        {eventDate.toLocaleDateString()}
+      </Button>
 
-      {/* Horários */}
       <View style={styles.row}>
-        <PaperInput
-          label="Horário de Início"
-          value={startTime}
-          onChangeText={setStartTime}
-          style={[styles.input, styles.timeInput]}
+        <Button
           mode="outlined"
-          right={<PaperInput.Icon name="clock" />}
-        />
-        <PaperInput
-          label="Horário de Término"
-          value={endTime}
-          onChangeText={setEndTime}
-          style={[styles.input, styles.timeInput]}
+          onPress={() => setShowStartTimePicker(true)}
+          style={styles.timeInput}>
+          {startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </Button>
+        <Button
           mode="outlined"
-          right={<PaperInput.Icon name="clock" />}
-        />
+          onPress={() => setShowEndTimePicker(true)}
+          style={styles.timeInput}>
+          {endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+        </Button>
       </View>
 
-      {/* Local */}
-      <PaperInput
-        label="Endereço"
-        value={eventLocation}
-        onChangeText={setEventLocation}
-        style={styles.input}
+      <Button
         mode="outlined"
-      />
+        onPress={goToMap}
+        style={styles.input}
+      >
+       {eventLocation ? `${latitudeState}, ${longitudeState}` : "Selecionar Localização no Mapa"}
+      </Button>
 
-      {/* Categoria e Grupos */}
       <View style={styles.row}>
-        {/* Categoria Dropdown */}
         <Menu
           visible={categoryVisible}
           onDismiss={() => setCategoryVisible(false)}
@@ -119,7 +161,6 @@ const CreateEvent = () => {
           <Menu.Item onPress={() => setSelectedCategory('RPG de Mesa')} title="RPG de Mesa" />
         </Menu>
 
-        {/* Grupo Dropdown */}
         <Menu
           visible={groupVisible}
           onDismiss={() => setGroupVisible(false)}
@@ -138,44 +179,86 @@ const CreateEvent = () => {
         </Menu>
       </View>
 
-      {/* Botão Criar */}
       <Button mode="contained" onPress={handleCreateEvent} style={styles.createButton}>
         Criar Evento
       </Button>
+
+      {showStartTimePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={startTime}
+          mode="time"
+          is24Hour={true}
+          display="spinner"
+          onChange={handleStartTimeChange}
+        />
+      )}
+      {showEndTimePicker && (
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={endTime}
+          mode="time"
+          is24Hour={true}
+          display="spinner"
+          onChange={handleEndTimeChange}
+        />
+      )}
+      
+      {showDatePicker && (
+        <DateTimePicker
+          value={eventDate}
+          mode="date"
+          display="default"
+          onChange={(event, selectedDate) => {
+            setShowDatePicker(false);
+            setEventDate(selectedDate || eventDate);
+          }}
+        />
+      )}
     </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#f8f8f8',
+    flexGrow: 1,
+    backgroundColor: "#f7f9fc",
+    paddingHorizontal: 16,
+    paddingVertical: 20,
   },
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 20,
     textAlign: 'center',
+    marginBottom: 10,
   },
   input: {
-    marginBottom: 15,
+    marginBottom: 12,
+  },
+  descriptionInput: {
+    height: 150,  // Aumentando a altura para o campo de descrição
+    marginBottom: 12,
+  },
+  createButton: {
+    marginTop: 20,
   },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   timeInput: {
-    flex: 1,
-    marginHorizontal: 5,
+    width: '45%',
   },
   dropdown: {
-    flex: 1,
-    marginHorizontal: 5,
+    width: '45%',
   },
-  createButton: {
-    marginTop: 20,
-    padding: 10,
+  locationCoordinates: {
+    position: 'absolute',
+    top: 160,  // Ajuste a posição conforme necessário
+    left: 20,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)',
+    padding: 8,
+    borderRadius: 5,
   },
 });
 

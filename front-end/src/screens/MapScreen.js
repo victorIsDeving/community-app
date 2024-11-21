@@ -3,61 +3,59 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const criarEvento = async ()=>{
-  try{
-  console.log('1');
-  const data = 
-  {
-  "id": 1,
-  "nome": "string12",
-  "imagem": "string23",
-  "descricao": "string34",
-  "localizacao": 0,
-  "horaInicio": {
-    "hour": 0,
-    "minute": 0,
-    "second": 0,
-  },
-  "horaFim": {
-    "hour": 0,
-    "minute": 0,
-    "second": 0,
-  },
-  "data": "2024-11-21",
-  "visibilidade": "string",
-  "usersParticipants": [
-    "string"
-  ],
-  "usersAdministrators": [
-    "string"
-  ],
-  "interestsEvent": [
-    {
-      "interesse": "string"
-    }
-  ]
-  };
-  const header = {"Content-Type": "application/json"}
-  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/events', {method:"GET", headers: header});
-  console.log('2');
-  console.log(v.status);
-  console.log(v.statusText);
-  console.log(JSON.stringify(v.json()));
-  if(v.ok){
-    const json = await v.json();
-    
-    console.log(json);
-  }
-  }catch(e){
-    console.log(e);}
-}
-
-const MapScreen = () => {
+const MapScreen = ({ navigation }) => {
   const [location, setLocation] = useState(null);
   const [hasPermission, setHasPermission] = useState(false);
   const [markers, setMarkers] = useState([]); 
 
-  
+  const criarEvento = async () => {
+    try {
+      console.log('1');
+      const data = {
+        "id": 1,
+        "nome": "string12",
+        "imagem": "string23",
+        "descricao": "string34",
+        "localizacao": 0,
+        "horaInicio": {
+          "hour": 0,
+          "minute": 0,
+          "second": 0,
+        },
+        "horaFim": {
+          "hour": 0,
+          "minute": 0,
+          "second": 0,
+        },
+        "data": "2024-11-21",
+        "visibilidade": "string",
+        "usersParticipants": [
+          "string"
+        ],
+        "usersAdministrators": [
+          "string"
+        ],
+        "interestsEvent": [
+          {
+            "interesse": "string"
+          }
+        ]
+      };
+      const header = { "Content-Type": "application/json" };
+      const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/events', { method: "GET", headers: header });
+      console.log('2');
+      console.log(v.status);
+      console.log(v.statusText);
+      console.log(JSON.stringify(v.json()));
+      if (v.ok) {
+        const json = await v.json();
+        console.log(json);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
   const requestLocationPermission = async () => {
     const { status } = await Location.requestForegroundPermissionsAsync();
     if (status === 'granted') {
@@ -81,9 +79,8 @@ const MapScreen = () => {
 
   const handleMapPress = (event) => {
     const { coordinate } = event.nativeEvent;
-    const { latitude, longitude } = event.nativeEvent.coordinate;
-    console.log(latitude, longitude);
-
+    const { latitude, longitude } = coordinate;
+  
     Alert.alert(
       'Criar Evento',
       'Deseja criar um evento neste local?',
@@ -93,16 +90,17 @@ const MapScreen = () => {
           style: 'cancel',
         },
         {
-          text: 'API test',
-          onPress: () => {
-            
-            criarEvento();
-          },
-        },
-        {
           text: 'Sim',
           onPress: () => {
-            
+            // Verifica se o estado location está disponível, se não usa as coordenadas do evento
+            const latitude = location.latitude || latitude;
+            const longitude = location.longitude || longitude;
+            console.log(latitude, longitude);
+  
+            navigation.navigate('CreateEvent',{
+               latitude, longitude
+            });
+  
             setMarkers((prevMarkers) => [
               ...prevMarkers,
               { coordinate, key: Math.random().toString() },
@@ -112,7 +110,7 @@ const MapScreen = () => {
       ]
     );
   };
-
+  
   return (
     <View style={styles.container}>
       {hasPermission ? (
