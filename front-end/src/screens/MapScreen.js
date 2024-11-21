@@ -3,6 +3,55 @@ import { View, Text, StyleSheet, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
+const criarEvento = async ()=>{
+  try{
+  console.log('1');
+  const data = 
+  {
+  "id": 1,
+  "nome": "string12",
+  "imagem": "string23",
+  "descricao": "string34",
+  "localizacao": 0,
+  "horaInicio": {
+    "hour": 0,
+    "minute": 0,
+    "second": 0,
+  },
+  "horaFim": {
+    "hour": 0,
+    "minute": 0,
+    "second": 0,
+  },
+  "data": "2024-11-21",
+  "visibilidade": "string",
+  "usersParticipants": [
+    "string"
+  ],
+  "usersAdministrators": [
+    "string"
+  ],
+  "interestsEvent": [
+    {
+      "interesse": "string"
+    }
+  ]
+  };
+  const header = {"Content-Type": "application/json"}
+  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/events', {method:"GET", headers: header});
+  console.log('2');
+  console.log(v.status);
+  console.log(v.statusText);
+  console.log(JSON.stringify(v.json()));
+  if(v.ok){
+    const json = await v.json();
+    
+    console.log(json);
+  }
+  }catch(e){
+    console.log(e);}
+}
+
 const MapScreen = () => {
   const [location, setLocation] = useState(null);
   const [hasPermission, setHasPermission] = useState(false);
@@ -32,6 +81,8 @@ const MapScreen = () => {
 
   const handleMapPress = (event) => {
     const { coordinate } = event.nativeEvent;
+    const { latitude, longitude } = event.nativeEvent.coordinate;
+    console.log(latitude, longitude);
 
     Alert.alert(
       'Criar Evento',
@@ -40,6 +91,13 @@ const MapScreen = () => {
         {
           text: 'Cancelar',
           style: 'cancel',
+        },
+        {
+          text: 'API test',
+          onPress: () => {
+            
+            criarEvento();
+          },
         },
         {
           text: 'Sim',
