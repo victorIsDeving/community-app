@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.community-backend</groupId>
 	<artifactId>springboot-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>springboot-api</name>
 	<description>Spring Boot APIs for COMMUNITY app</description>
 	<url/>

@@ -4,6 +4,9 @@ import com.community_backend.springboot_api.models.Event;
 import com.community_backend.springboot_api.services.EventService; // Importa o serviço
 import com.community_backend.springboot_api.repository.EventRepository;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -36,7 +39,34 @@ public class EventController {
 
     @PostMapping("/event")
     @Operation(summary = "Salve um evento")
-    public Event inserirEvent(@RequestBody Event newEvent) {
+    public Event inserirEvent(@RequestBody( description = "Event to create", required = true,
+        content = @Content(
+            examples = @ExampleObject(
+                name = "Exemplo de Evento",
+                value = "{\n" +
+                        "  \"id\": 0,\n" +
+                        "  \"nome\": \"Clube do Livro\",\n" +
+                        "  \"imagem\": \"string\",\n" +
+                        "  \"descricao\": \"Tipo um Clube da Luta, mas que as pessoas se batem com livros. Recomendamos que venha com um de capa dura.\",\n" +
+                        "  \"latitude\": -23.48361989845623,\n" +
+                        "  \"longitude\": -46.501843057946786,\n" +
+                        "  \"horaInicio\": \"15:00:00\",\n" +
+                        "  \"horaFim\": \"16:30:00\",\n" +
+                        "  \"data\": \"2024-11-26\",\n" +
+                        "  \"visibilidade\": \"string\",\n" +
+                        "  \"usersAdministrators\": [\n" +
+                        "    {\n" +
+                        "      \"id\": 1\n" +
+                        "    }\n" +
+                        "  ],\n" +
+                        "  \"usersParticipants\": [\n" +
+                        "    {\n" +
+                        "      \"id\": 1\n" +
+                        "    }\n" +
+                        "  ]\n" +
+                        "}"
+            )
+        )) Event newEvent) {
         return eventRepository.save(newEvent);
     }
 

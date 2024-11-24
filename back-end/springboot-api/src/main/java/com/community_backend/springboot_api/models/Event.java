@@ -25,8 +25,14 @@ public class Event implements Serializable {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "localizacao")
-    private Long localizacao;
+    @Column(name = "endereço")
+    private String endereço;
+
+    @Column(name = "latitude")
+    private Long latitude;
+
+    @Column(name = "longitude")
+    private Long longitude;
 
     @Column(name = "hora_inicio")
     private LocalTime horaInicio;
@@ -84,20 +90,32 @@ public class Event implements Serializable {
         this.imagem = imagem;
     }
 
-    public String getDescricao() {
-        return descricao;
-    }
+    public String getDescricao() { return descricao; }
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
 
-    public Long getLocalizacao() {
-        return localizacao;
+    public String getEndereço() { return endereço; }
+
+    public void setEndereço(String endereço) {
+        this.endereço = endereço;
     }
 
-    public void setLocalizacao(Long localizacao) {
-        this.localizacao = localizacao;
+    public Long getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Long latitude) {
+        this.latitude = latitude;
+    }
+
+    public Long getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Long longitude) {
+        this.longitude = longitude;
     }
 
     public LocalTime getHoraInicio() {
