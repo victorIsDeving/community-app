@@ -1,10 +1,11 @@
 package com.community_backend.springboot_api.models;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 @Entity
 @Table(name = "TB_EVENTS")
@@ -12,10 +13,16 @@ public class Event implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    public Event() {
+
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+
+    @JsonProperty("nome")
     @Column(name = "nome")
     private String nome;
 
@@ -25,8 +32,8 @@ public class Event implements Serializable {
     @Column(name = "descricao")
     private String descricao;
 
-    @Column(name = "endereço")
-    private String endereço;
+    @Column(name = "endereco")
+    private String endereco;
 
     @Column(name = "latitude")
     private Long latitude;
@@ -34,36 +41,56 @@ public class Event implements Serializable {
     @Column(name = "longitude")
     private Long longitude;
 
-    @Column(name = "hora_inicio")
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Column(name = "horaInicio")
     private LocalTime horaInicio;
 
-    @Column(name = "hora_fim")
+    @JsonFormat(pattern = "HH:mm:ss")
+    @Column(name = "horaFim")
     private LocalTime horaFim;
 
+    @JsonProperty("data")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = "data")
     private LocalDate data;
 
     @Column(name = "visibilidade")
     private String visibilidade;
 
-    @ManyToMany
-    @JoinTable(
-            name = "tb_event_participants",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users_participants;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "tb_event_participants",
+//            joinColumns = @JoinColumn(name = "event_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    private List<User> users_participants;
 
-    @ManyToMany
-    @JoinTable(
-            name = "tb_event_administrators",
-            joinColumns = @JoinColumn(name = "event_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private List<User> users_administrators;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "tb_event_administrators",
+//            joinColumns = @JoinColumn(name = "event_id"),
+//            inverseJoinColumns = @JoinColumn(name = "user_id")
+//    )
+//    private List<User> users_administrators;
 
-    @ManyToMany(mappedBy = "interest_event")
-    private List<Interest> interests_event;
+//    @ManyToMany(mappedBy = "interest_event")
+//    private List<Interest> interests_event;
+
+    @Override
+    public String toString() {
+        return "Event{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                ", descricao='" + descricao + '\'' +
+                ", data=" + data +
+                ", horaInicio=" + horaInicio +
+                ", horaFim=" + horaFim +
+                ", latitude=" + latitude +
+                ", longitude=" + longitude +
+                ", imagem='" + imagem + '\'' +
+                ", visibilidade='" + visibilidade + '\'' +
+                '}';
+    }
 
     // Getters e Setters
     public Long getId() {
@@ -96,11 +123,9 @@ public class Event implements Serializable {
         this.descricao = descricao;
     }
 
-    public String getEndereço() { return endereço; }
+    public String getEndereco() { return endereco; }
 
-    public void setEndereço(String endereço) {
-        this.endereço = endereço;
-    }
+    public void setEndereco(String endereco) { this.endereco = endereco; }
 
     public Long getLatitude() {
         return latitude;
@@ -150,27 +175,27 @@ public class Event implements Serializable {
         this.visibilidade = visibilidade;
     }
 
-    public List<User> getUsersParticipants() {
-        return users_participants;
-    }
-
-    public void setUsersParticipants(List<User> users_participants) {
-        this.users_participants = users_participants;
-    }
-
-    public List<User> getUsersAdministrators() {
-        return users_administrators;
-    }
-
-    public void setUsersAdministrators(List<User> users_administrators) {
-        this.users_administrators = users_administrators;
-    }
-
-    public List<Interest> getInterestsEvent() {
-        return interests_event;
-    }
-
-    public void setInterestsEvent(List<Interest> interests_event) {
-        this.interests_event = interests_event;
-    }
+//    public List<User> getUsersParticipants() {
+//        return users_participants;
+//    }
+//
+//    public void setUsersParticipants(List<User> users_participants) {
+//        this.users_participants = users_participants;
+//    }
+//
+//    public List<User> getUsersAdministrators() {
+//        return users_administrators;
+//    }
+//
+//    public void setUsersAdministrators(List<User> users_administrators) {
+//        this.users_administrators = users_administrators;
+//    }
+//
+//    public List<Interest> getInterestsEvent() {
+//        return interests_event;
+//    }
+//
+//    public void setInterestsEvent(List<Interest> interests_event) {
+//        this.interests_event = interests_event;
+//    }
 }

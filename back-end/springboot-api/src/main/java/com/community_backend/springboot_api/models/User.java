@@ -35,11 +35,11 @@ public class User implements Serializable {
     @Column(name = "nusp")
     private Long nusp;
 
-    @ManyToMany(mappedBy = "users_participants")
-    private List<Event> events_participants;
+//    @ManyToMany(mappedBy = "users_participants")
+//    private List<Event> events_participants;
 
-    @ManyToMany(mappedBy = "users_administrators")
-    private List<Event> events_administrators;
+//    @ManyToMany(mappedBy = "users_administrators")
+//    private List<Event> events_administrators;
 
     @ManyToMany(mappedBy = "interest_user", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Interest> interests_user;
@@ -109,27 +109,27 @@ public class User implements Serializable {
         this.nusp = nusp;
     }
 
-    public List<Event> getEventsParticipants() {
-        return events_participants;
-    }
+//    public List<Event> getEventsParticipants() {
+//        return events_participants;
+//    }
+//
+//    public void setEventsParticipants(List<Event> events_participants) {
+//        this.events_participants = events_participants;
+//    }
+//
+//    public List<Event> getEventsAdministrators() {
+//        return events_administrators;
+//    }
+//
+//    public void setEventsAdministrators(List<Event> events_administrators) {
+//        this.events_administrators = events_administrators;
+//    }
 
-    public void setEventsParticipants(List<Event> events_participants) {
-        this.events_participants = events_participants;
-    }
-
-    public List<Event> getEventsAdministrators() {
-        return events_administrators;
-    }
-
-    public void setEventsAdministrators(List<Event> events_administrators) {
-        this.events_administrators = events_administrators;
-    }
-
-    public List<Interest> getInterestsUser() {
-        return interests_user;
-    }
-
-    public void setInterestsUser(List<Interest> interests_user) {
-        this.interests_user = interests_user;
-    }
+//    public List<Interest> getInterestsUser() {
+//        return interests_user;
+//    }
+//
+//    public void setInterestsUser(List<Interest> interests_user) {
+//        this.interests_user = interests_user;
+//    }
 }
