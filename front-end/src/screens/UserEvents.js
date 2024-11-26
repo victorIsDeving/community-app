@@ -1,74 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Button } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-const apiTesteGET = async ()=>{
-  try{
-  console.log('1');
-  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/users', );
-  console.log('2');
-  if(v.ok){
-    const json = await v.json();
-    
-    console.log(json);
+
+const apiTesteGET = async () => {
+  try {
+    console.log('1');
+    const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/events');
+    console.log('2');
+    if (v.ok) {
+      const json = await v.json();
+      console.log(json);
+      return json; // Retorna os eventos recebidos
+    } else {
+      console.error('Erro na requisição', v.status);
+      return [];
+    }
+  } catch (e) {
+    console.error(e);
+    return [];
   }
-  }catch(e){
-    console.log(e);}
-}
-const apiTestePOST = async ()=>{
-  try{
-  console.log('1');
-  const data = 
-  {
-    "nome": "321",
-    "email": "123",
-    "nusp": 13673051,
-  };
-  const header = {"Content-Type": "application/json"}
-  const v = await fetch('http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/user', {method:"POST", body:JSON.stringify(data), headers: header});
-  console.log('2');
-  console.log(v.status);
-  console.log(v.statusText);
-  console.log(JSON.stringify(v.json()));
-  if(v.ok){
-    const json = await v.json();
-    
-    console.log(json);
-  }
-  }catch(e){
-    console.log(e);}
-}
+};
+
 export default function UserEvents() {
   const navigation = useNavigation();
-  const [events, setEvents] = useState([
-    { id: '1', title: 'Basquete da tropa', date: '2024-11-10', time: '14:00', location: 'Quadra da Escola', description: 'Partida de basquete com o pessoal.' },
-    { id: '2', title: 'Futebol da turma', date: '2024-12-15', time: '16:00', location: 'Campo Municipal', description: 'Futebas dos amigos, quem quiser cola.' },
-    { id: '3', title: 'Corrida na EACH', date: '2025-01-20', time: '07:30', location: 'EACH-USP', description: 'Corrida em volta da EACH-USP.' },
-  ]);
-  
+  const [events, setEvents] = useState([]); // Inicialmente vazio
+  const [isLoading, setIsLoading] = useState(true); // Para mostrar um carregamento enquanto espera pela resposta da API
+  const [error, setError] = useState(null); // Para armazenar erros, se houver
 
+  useEffect(() => {
+    const fetchEvents = async () => {
+      setIsLoading(true);
+      setError(null);
+      const fetchedEvents = await apiTesteGET();
+      if (fetchedEvents.length === 0) {
+        setError('Nenhum evento encontrado.');
+      }
+      setEvents(fetchedEvents);
+      setIsLoading(false);
+    };
 
-  const handleEventPress = (event) => {
-    navigation.navigate('Event Details', { event });
+    fetchEvents();
+  }, []);
+
+  const handleEventClick = (event) => {
+    navigation.navigate('Event Details', { eventId: event });
   };
+  
 
   return (
     <View style={styles.container}>
       <Text style={styles.header}>Meus Eventos</Text>
-      <Button title="GET" 
-      onPress={apiTesteGET} ></Button>
-      <Button title="POST" 
-      onPress={apiTestePOST}></Button>
-
-      {events.length > 0 ? (
+      {isLoading ? (
+        <Text style={styles.loadingText}>Carregando eventos...</Text>
+      ) : error ? (
+        <Text style={styles.errorText}>{error}</Text>
+      ) : events.length > 0 ? (
         <FlatList
           data={events}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <TouchableOpacity style={styles.eventCard} onPress={() => handleEventPress(item)}>
-              <Text style={styles.eventTitle}>{item.title}</Text>
-              <Text style={styles.eventDate}>{`Data: ${item.date} às ${item.time}`}</Text>
-            </TouchableOpacity>
-          )}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => {
+            const eventDate = item.data || "Data não disponível"; // Garantir que a data não seja undefined
+            const eventStartTime = item.horaInicio || "Horário de início não disponível"; // Garantir que o horário de início não seja undefined
+            const eventEndTime = item.horaFim || "Horário de término não disponível"; // Garantir que o horário de término não seja undefined
+            
+            return (
+              <TouchableOpacity style={styles.eventCard} onPress={() => handleEventClick(item.id.toString())}>
+                <Text style={styles.eventTitle}>{item.nome}</Text>
+                <Text style={styles.eventDate}>{`Data: ${eventDate} de ${eventStartTime} às ${eventEndTime}`}</Text>
+              </TouchableOpacity>
+            );
+          }}
         />
       ) : (
         <Text style={styles.noEventsText}>Você ainda não criou eventos.</Text>
@@ -105,6 +106,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#555',
     marginTop: 5,
+  },
+  loadingText: {
+    fontSize: 18,
+    color: '#888',
+    textAlign: 'center',
+    marginTop: 20,
+  },
+  errorText: {
+    fontSize: 18,
+    color: '#ff0000',
+    textAlign: 'center',
+    marginTop: 20,
   },
   noEventsText: {
     fontSize: 18,

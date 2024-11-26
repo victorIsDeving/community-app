@@ -1,11 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Share, Alert } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Share, Alert, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import MapView, { Marker } from 'react-native-maps';
 
 export default function EventDetails({ route }) {
   const navigation = useNavigation();
-  const { event } = route.params;
+  const { eventId } = route.params;
+  const [event, setEvent] = useState(null);
   const [isParticipating, setIsParticipating] = useState(false);
+
+  useEffect(() => {
+    const fetchEventDetails = async () => {
+      try {
+        const response = await fetch(`http://ec2-18-230-11-198.sa-east-1.compute.amazonaws.com:8080/api/events/${eventId}`);
+        const data = await response.json();
+        setEvent(data);
+      } catch (error) {
+        Alert.alert('Erro', 'Não foi possível carregar os detalhes do evento.');
+      }
+    };
+
+    fetchEventDetails();
+  }, [eventId]);
+
+  if (!event) {
+    return <Text>Carregando...</Text>;
+  }
+
+  const coordinates = event.endereco ? event.endereco.split(',').map(coord => parseFloat(coord)) : [0, 0];
 
   const handleParticipation = () => {
     setIsParticipating(!isParticipating);
@@ -17,7 +39,7 @@ export default function EventDetails({ route }) {
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Evento: ${event.title}\nData: ${event.date}\nDescrição: ${event.description}`,
+        message: `Evento: ${event.nome}\nData: ${event.data}\nDescrição: ${event.descricao}`,
       });
     } catch (error) {
       alert('Erro ao compartilhar o evento');
@@ -25,10 +47,25 @@ export default function EventDetails({ route }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>{event.title}</Text>
-      <Text style={styles.date}>{`Data: ${event.date}`}</Text>
-      <Text style={styles.description}>{event.description}</Text>
+    <ScrollView style={styles.container}>
+      <Text style={styles.header}>{event.nome}</Text>
+      <Text style={styles.date}>{`Data: ${event.data}`}</Text>
+      <Text style={styles.description}>{event.descricao}</Text>
+
+      <View style={styles.mapContainer}>
+        <MapView
+          style={styles.map}
+          customMapStyle={mapStyles}
+          initialRegion={{
+            latitude: coordinates[0],
+            longitude: coordinates[1],
+            latitudeDelta: 0.002,
+            longitudeDelta: 0.002,
+          }}
+        >
+          <Marker coordinate={{ latitude: coordinates[0], longitude: coordinates[1] }} title={event.nome} />
+        </MapView>
+      </View>
 
       <TouchableOpacity style={styles.button} onPress={handleParticipation}>
         <Text style={styles.buttonText}>
@@ -40,20 +77,18 @@ export default function EventDetails({ route }) {
         <Text style={styles.buttonText}>Compartilhar Evento</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.backButton} onPress={() => navigation.navigate('User Events')}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('UserEvents')}>
         <Text style={styles.buttonText}>Voltar</Text>
       </TouchableOpacity>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'flex-start',
-    padding: 20,
     backgroundColor: '#f7f9fc',
+    padding: 20,
   },
   header: {
     fontSize: 28,
@@ -68,24 +103,28 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: 'center',
   },
-  location: {
-    fontSize: 18,
-    color: '#555',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
   description: {
     fontSize: 16,
     color: '#333',
     textAlign: 'center',
   },
+  mapContainer: {
+    width: '100%',
+    height: 250,
+    marginVertical: 20,
+  },
+  map: {
+    flex: 1,
+    borderRadius: 8,
+  },
   button: {
     backgroundColor: '#007BFF',
     borderRadius: 5,
-    padding: 10,
+    padding: 12,
     alignItems: 'center',
     width: '80%',
-    marginTop: 20,
+    marginVertical: 10,
+    alignSelf: 'center',
   },
   buttonText: {
     color: '#fff',
@@ -95,10 +134,81 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: '#007BFF',
     borderRadius: 5,
-    padding: 10,
+    padding: 12,
     alignItems: 'center',
     width: '80%',
-    position: 'absolute',
-    bottom: 10,
-  }
+    alignSelf: 'center',
+    marginBottom: 20,
+  },
 });
+
+const mapStyles = [
+  {
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ccd9eb"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "visibility": "on"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.fill",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "elementType": "labels.text.stroke",
+    "stylers": [
+      {
+        "color": "#0000"
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "poi",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ccd9eb"
+      }
+    ]
+  },
+  {
+    "featureType": "road",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#ffffff"
+      }
+    ]
+  },
+  {
+    "featureType": "water",
+    "elementType": "geometry",
+    "stylers": [
+      {
+        "color": "#93c8e3"
+      }
+    ]
+  }
+];
