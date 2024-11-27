@@ -200,44 +200,8 @@ const CreateEvent = ({ location, onCreateEvent, route, navigation }) => {
         onPress={goToMap}
         style={styles.input}
         labelStyle={styles.ButtonText}>
-        {eventLocation ? `${latitudeState}, ${longitudeState}` : 'Selecionar Localização no Mapa'}
+        Localização
       </Button>
-
-      <View style={styles.row}>
-        <Menu
-          visible={categoryVisible}
-          onDismiss={() => setCategoryVisible(false)}
-          anchor={
-            <Button
-              onPress={() => setCategoryVisible(true)}
-              style={styles.dropdown}
-              labelStyle={styles.ButtonText}>
-              {selectedCategory || 'Categoria'}
-            </Button>
-          }>
-          <Menu.Item onPress={() => setSelectedCategory('Basquete')} title="Basquete" />
-          <Menu.Item onPress={() => setSelectedCategory('Tênis')} title="Tênis" />
-          <Menu.Item onPress={() => setSelectedCategory('Dança')} title="Dança" />
-          <Menu.Item onPress={() => setSelectedCategory('RPG de Mesa')} title="RPG de Mesa" />
-        </Menu>
-
-        <Menu
-          visible={groupVisible}
-          onDismiss={() => setGroupVisible(false)}
-          anchor={
-            <Button
-              onPress={() => setGroupVisible(true)}
-              style={styles.dropdown}
-              labelStyle={styles.ButtonText}>
-              {selectedGroup || 'Grupo'}
-            </Button>
-          }>
-          <Menu.Item onPress={() => setSelectedGroup('Grupo 1')} title="Grupo 1" />
-          <Menu.Item onPress={() => setSelectedGroup('Grupo 2')} title="Grupo 2" />
-          <Menu.Item onPress={() => setSelectedGroup('Grupo 3')} title="Grupo 3" />
-          <Menu.Item onPress={() => setSelectedGroup('Grupo 4')} title="Grupo 4" />
-        </Menu>
-      </View>
 
       <Button mode="contained" onPress={criarEvento} style={styles.createButton}>
         Criar Evento
